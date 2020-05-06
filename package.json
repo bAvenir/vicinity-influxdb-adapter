@@ -1,7 +1,7 @@
 {
-  "name": "bAvenirAdapter",
+  "name": "bAvenirAdapterInflux",
   "version": "1.0.0",
-  "description": "bAvenir generic adapter to VICINITY",
+  "description": "bAvenir generic adapter from VICINITY to InfluxDb",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

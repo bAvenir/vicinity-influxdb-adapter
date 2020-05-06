@@ -1,8 +1,8 @@
-# bAvenir VICINITY adapter
+# bAvenir VICINITY adapter for Influx db
 
 **Current version V.1**
 
-This is a Node.js project that acts as an adapter between VICINITY and other technologies or applications.
+This is a Node.js project that acts as an adapter between VICINITY and Influx db.
 
 The first version aims to support the following interactions:
 
@@ -30,8 +30,6 @@ The first version aims to support the following interactions:
 * Sonarqube server
 
 ## How to run
-
-First run **npm install** in the project folder
 
 * Development mode
     * ./_setup.sh --> Build and run development mode
@@ -88,9 +86,16 @@ Example:
     ## ADAPTER
     #### Response Modes ["dummy", "proxy"]
     ADAPTER_RESPONSE_MODE="dummy"
-    #### Collection Modes ["dummy", "proxy"]
-    ADAPTER_DATA_COLLECTION_MODE="dummy"
+    #### Collection Modes ["dummy", "proxy", "influx"]
+    ADAPTER_DATA_COLLECTION_MODE="influx"
     ADAPTER_PROXY_URL="http://192.168.0.1:8000/proxy"
+    ## INFLUX
+    INFLUX_HOST="192.168.0.1",
+    INFLUX_PROTOCOL="http",
+    INFLUX_DB="",
+    INFLUX_PORT=8086,
+    INFLUX_USERNAME="",
+    INFLUX_PWD=""
     ## Persistance
     PERSISTANCE_DB="redis"
     PERSISTANCE_DB_HOST="cache-db"

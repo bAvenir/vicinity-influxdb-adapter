@@ -1,0 +1,14 @@
+[
+    {"oid": "4a6572f1-6f07-4384-88d0-acc23a48d795", "event": "pv"},
+    {"oid": "12a57845-f0b1-44df-9198-8d66a5798267", "event": "pv"},
+    {"oid": "6defcb16-c526-49d5-b43d-1f41e5392ea1", "event": "pv"},
+    {"oid": "b0ece0cd-90a7-44c3-b091-f0380312e609", "event": "pv"},
+    {"oid": "30d0402f-ba0b-442f-a0ea-342072559fcd", "event": "pv"},
+    {"oid": "30d0402f-ba0b-442f-a0ea-342072559fcd", "event": "battery"},
+    {"oid": "7c0f9b3f-e5ad-4e52-b2d9-8319feec764d", "event": "pv"},
+    {"oid": "a0a82b36-69b7-4cfe-ab24-4d7420544521", "event": "pv"},
+    {"oid": "682abc3a-589c-4939-9e70-3711bb449bcb", "event": "pv"},
+    {"oid": "0e268838-25f3-45b7-825e-7b5302e9cde8", "event": "pv"},
+    {"oid": "0e268838-25f3-45b7-825e-7b5302e9cde8", "event": "battery"},
+    {"oid": "8dd61018-ebc1-43bc-847b-8467563905b9", "event": "pv"}
+]
