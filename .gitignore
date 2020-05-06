@@ -18,3 +18,8 @@ log/
 nginx/logs/
 ## Redis
 redis/data/
+## Grafana
+grafana/data/
+## Influx
+influx/data/
+influx/backup/
