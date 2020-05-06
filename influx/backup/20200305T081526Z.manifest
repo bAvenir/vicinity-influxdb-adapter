@@ -1,0 +1,25 @@
+{
+  "meta": {
+    "fileName": "20200305T081526Z.meta",
+    "size": 1256
+  },
+  "limited": false,
+  "files": [
+    {
+      "database": "longterm",
+      "policy": "autogen",
+      "shardID": 3,
+      "fileName": "20200305T081526Z.s3.tar.gz",
+      "size": 161792,
+      "lastModified": 0
+    },
+    {
+      "database": "longterm",
+      "policy": "autogen",
+      "shardID": 15,
+      "fileName": "20200305T081526Z.s15.tar.gz",
+      "size": 138752,
+      "lastModified": 0
+    }
+  ]
+}

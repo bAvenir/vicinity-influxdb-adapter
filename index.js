@@ -12,6 +12,7 @@ let logger = new Log();
 
 // Load services
 const agent = require('./src/_agent/agent');
+const influx = require('./src/_adapters/_modules/influx');
 
 // Set up redis cache db
 let cache = require("./src/_persistance/_modules/redis");
@@ -71,7 +72,8 @@ async function bootstrap(){
     await agent.initialize();
 
     // Run other services here
-    // ...
+    await influx.start();
+    await influx.pingDB();
     
     logger.info("All services initialized", "MAIN");
 
