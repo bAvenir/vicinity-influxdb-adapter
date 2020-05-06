@@ -74,6 +74,7 @@ async function bootstrap(){
     // Run other services here
     await influx.start();
     await influx.pingDB();
+    await influx.initialize();
     
     logger.info("All services initialized", "MAIN");
 

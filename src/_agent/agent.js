@@ -24,6 +24,9 @@ module.exports.initialize = async function(){
         // Check current configuration 
         if(!config.gatewayId || !config.gatewayPwd) throw new Error('Missing gateway id or credentials...');
         
+        // Load mappings and configurations
+        await persistance.loadConfigurationFile('mapper');
+
         // Get objects OIDs stored locally
         let registrations = await persistance.getLocalObjects();
 
@@ -97,6 +100,34 @@ module.exports.importFromFile = async function(type){
 module.exports.exportToFile = async function(type){
     try{
         await persistance.saveConfigurationFile(type);
+        return Promise.resolve(true);
+    }catch(err){
+        return Promise.reject(err);
+    }
+}
+
+/**
+ * Subscribes service to all events defined in mapper.json
+ */
+module.exports.subscribeEvents = async function(){
+    try{
+        let subscriptions = await persistance.getMappers();
+        let oids = await persistance.getLocalObjects();
+        await services.subscribeEvents(oids, subscriptions);
+        return Promise.resolve(true);
+    }catch(err){
+        return Promise.reject(err);
+    }
+}
+
+/**
+ * Unsubscribes service from all events defined in mapper.json
+ */
+module.exports.unsubscribeEvents = async function(){
+    try{
+        let subscriptions = await persistance.getMappers();
+        let oids = await persistance.getLocalObjects();
+        await services.unsubscribeEvents(oids, subscriptions);
         return Promise.resolve(true);
     }catch(err){
         return Promise.reject(err);

@@ -1,7 +1,9 @@
 const Influx = require('influx');
 const Log = require('../../_classes/logger');
 const config = require('../configuration');
+const agent = require('../../_agent/agent');
 // const eventHandler = require('../api/services/items').eventEmitter;
+
 // Declare global db object
 let influxOP;
 
@@ -56,19 +58,26 @@ module.exports.pingDB = async function(){
     }
 }
 
-// module.exports.initialize = function(){
-    // let logger = new Log();
-    // // Ensure your database exists
-    // influxOP.getDatabaseNames()
-    // .then(names=>{
-    //     if(names.indexOf('shortterm') == -1){
-    //         return influxOP.createDatabase('shortterm');
-    //     } else {
-    //         Promise.resolve();
-    //     }
-    // })
+module.exports.initialize = async function(){
+    let logger = new Log();
+    try{
+        // Check db is ready
+        let dbs = await influxOP.getDatabaseNames();
+        await _checkDb(dbs);
+        // Subscribe to events
+        await agent.subscribeEvents();
+        
+        logger.info("InfluxDB initialized and waiting for events", "INFLUX");
+        return Promise.resolve(true);
+    } catch(err) {
+      logger.error(err, "INFLUX")
+      return Promise.reject(false);
+    }
+
+
+
+
     // .then(function(response){
-    //     logger.info("InfluxDB initialized and waiting for events", "INFLUXDB");
     //     // UKMQTT
     //     eventHandler.on("ukmqtt", function(data) {
     //       influxOP.writePoints([
@@ -156,4 +165,21 @@ module.exports.pingDB = async function(){
     // .catch(function(err){
     //     logger.error(err, "INFLUXDB");
     // });
-// }
+}
+
+// Private functions
+
+/**
+ * Receives all existing dbs
+ * If necessary dbs do not exist creates them
+ * On error terminates initialization
+ * @param {array} dbnames 
+ */
+async function _checkDb(dbnames){
+    try{
+        if(dbnames.indexOf('shortterm') == -1) await influxOP.createDatabase('shortterm');
+        return Promise.resolve(true);
+    }catch(err){
+        return Promise.reject(err);
+    }
+}

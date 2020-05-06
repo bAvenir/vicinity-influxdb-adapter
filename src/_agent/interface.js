@@ -277,6 +277,7 @@ module.exports.statusRemoteEventChannel = async function(oid, remote_oid, eid){
  */
 
 module.exports.subscribeRemoteEventChannel = async function(oid, remote_oid, eid){
+    let logger = new Log();
     try{
         let request = new Req();
         await request.setAuthorization(oid);
@@ -285,7 +286,8 @@ module.exports.subscribeRemoteEventChannel = async function(oid, remote_oid, eid
         let result = await request.send();
         return Promise.resolve(result);
     } catch(err) {
-        return Promise.reject(err)
+        logger.error(err, "GATEWAY");
+        return Promise.resolve(err)
     }
 }
 
@@ -297,6 +299,7 @@ module.exports.subscribeRemoteEventChannel = async function(oid, remote_oid, eid
  */
 
 module.exports.unsubscribeRemoteEventChannel = async function(oid, remote_oid, eid){
+    let logger = new Log();
     try{
         let request = new Req();
         await request.setAuthorization(oid);
@@ -305,7 +308,8 @@ module.exports.unsubscribeRemoteEventChannel = async function(oid, remote_oid, e
         let result = await request.send();
         return Promise.resolve(result);
     } catch(err) {
-        return Promise.reject(err)
+        logger.error(err, "GATEWAY");
+        return Promise.resolve(err)
     }
 }
 

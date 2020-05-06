@@ -293,3 +293,23 @@ module.exports.redisHealth = async function(){
         return Promise.resolve(false);
     }
 }
+
+// MAPPINGS 
+
+/**
+ * Get all mappers
+ */
+module.exports.getMappers = async function(){
+    try{
+        let aux = [];
+        let result = [];
+        let mappers = await redis.smembers('MAPPERS');
+        for(let i=0, l=mappers.length; i<l; i++){
+            aux = mappers[i].split(':');
+            result.push({'oid': aux[0], 'eid': aux[1]});
+        }
+        return Promise.resolve(result);
+    } catch(err){
+        return Promise.resolve(false);
+    }
+}
