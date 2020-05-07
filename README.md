@@ -45,6 +45,11 @@ The first version aims to support the following interactions:
     * npm run test -> for jest tests
     * npm run analyze -> for sonarqube analysis 
 
+## Troubleshooting
+
+* To redirect requests for GRAFANA: NGINX in Docker listens to Local gateway IP of the subnet where grafana runs
+    * docker inspect network bridge (Usually is 172.17.0.1)
+
 ## Linux deployment notes
 
 * Change path in docker-compose file for volumes
@@ -148,7 +153,7 @@ NGINX is used as a reverse proxy to improve performance of Node.js app and to te
 
 * It is possible to activate HTTPS with NGINX.
     1. Get certificates
-    2.  Use HTTPS configuration in nginx/nginx.conf (Uncomment and edit required sections)
+    2. Use HTTPS configuration in nginx/nginx.conf (Uncomment and edit required sections)
     3. Add in docker-compose.yml volumes with the path of the certificates in the proxy section
 
 ## Includes

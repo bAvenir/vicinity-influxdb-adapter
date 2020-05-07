@@ -256,3 +256,30 @@ module.exports.exportFile = function(req, res){
     let gtwHealth = await gateway.health();
     res.json({error: false, message: {'Redis' : redisHealth, 'Gateway': gtwHealth, 'NodeApp': 'OK'} });
 }
+
+// INFLUX Endpoints
+
+module.exports.influxSubscribe = async function(req, res){
+    let logger = new Log();
+    agent.subscribeEvents()
+    .then(() => {
+        res.json({error: false, message: 'DONE'})
+    })
+    .catch((err) => {
+        logger.error(err, "ADMIN");
+        res.json({error: true, message: "Something went wrong, check the logs for more info"})
+    })
+}
+
+module.exports.influxUnsubscribe = async function(req, res){
+    let logger = new Log();
+    agent.unsubscribeEvents()
+    .then(() => {
+        res.json({error: false, message: 'DONE'})
+    })
+    .catch((err) => {
+        logger.error(err, "ADMIN");
+        res.json({error: true, message: "Something went wrong, check the logs for more info"})
+    })
+}
+

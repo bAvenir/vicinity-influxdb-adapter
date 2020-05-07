@@ -284,14 +284,15 @@ module.exports.subscribeRemoteEventChannel = async function(oid, remote_oid, eid
         request.setMethod('POST');
         request.setUri('objects/' + remote_oid + '/events/' + eid);
         let result = await request.send();
-        return Promise.resolve(result);
+        logger.debug(`Event ${eid} of ${remote_oid} : ${result.statusCodeReason}`, 'GATEWAY');
+        return Promise.resolve(true);
     } catch(err) {
         logger.error(err, "GATEWAY");
         return Promise.resolve(err)
     }
 }
 
- /**
+ /**c
  * Unsubscribe to remote event channel
  * (Using the credentials of a service or device)
  * @param {oid: string, eid: string}
@@ -306,7 +307,8 @@ module.exports.unsubscribeRemoteEventChannel = async function(oid, remote_oid, e
         request.setMethod('DELETE');
         request.setUri('objects/' + remote_oid + '/events/' + eid);
         let result = await request.send();
-        return Promise.resolve(result);
+        logger.debug(`Event ${eid} of ${remote_oid} : ${result.statusCodeReason}`, 'GATEWAY');
+        return Promise.resolve(true);
     } catch(err) {
         logger.error(err, "GATEWAY");
         return Promise.resolve(err)

@@ -20,7 +20,8 @@ services:
       cache-db:
         condition: service_healthy
     ports:
-    - 9997:9997
+      - 9997:9997
+      - 80:80
     image: nginx:stable
   gateway:
     container_name: gateway

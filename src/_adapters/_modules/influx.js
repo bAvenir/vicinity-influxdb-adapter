@@ -2,7 +2,7 @@ const Influx = require('influx');
 const Log = require('../../_classes/logger');
 const config = require('../configuration');
 const agent = require('../../_agent/agent');
-// const eventHandler = require('../api/services/items').eventEmitter;
+let eventHandler = require('../interface').eventEmitter;
 
 // Declare global db object
 let influxOP;
@@ -16,26 +16,32 @@ module.exports.start = function(){
         username: config.influx.username,
         password: config.influx.password,
         schema: [
-        //   {
-        //     measurement: 'eosinverter',
-        //     fields: {
-        //       pvinstalledcapacity: Influx.FieldType.INTEGER,
-        //       pvactualdcvoltage: Influx.FieldType.FLOAT,
-        //       invertertotaldcpower: Influx.FieldType.FLOAT,
-        //       inverteraccumulatedactiveenergyproduction: Influx.FieldType.INTEGER,
-        //       // pvconnectionstatus: Influx.FieldType.STRING,
-        //       inverteractualfrequency: Influx.FieldType.FLOAT,
-        //       pvactualdccurrent: Influx.FieldType.FLOAT,
-        //       inverteractualreactivepower: Influx.FieldType.FLOAT,
-        //       inverteractualactivepower: Influx.FieldType.INTEGER,
-        //       // inverterstatus: Influx.FieldType.STRING,
-        //       pvactualdcpower: Influx.FieldType.FLOAT,
-        //       // pvoperationstatus: Influx.FieldType.STRING
-        //     },
-        //     tags: [
-        //       'id', 'type', 'name'
-        //     ]
-        //   }
+          {
+            measurement: 'froniusinverter',
+            fields: {
+              devicestatus: Influx.FieldType.STRING,
+              pvinstalledcapacity: Influx.FieldType.INTEGER,
+              accumulatedenergyproduced: Influx.FieldType.INTEGER,
+              invertergridactivepowerload: Influx.FieldType.FLOAT,
+              inverterconsumeractivepowerload: Influx.FieldType.FLOAT,
+              inverteractualactivepower: Influx.FieldType.FLOAT,
+            },
+            tags: [
+              'id', 'name'
+            ]
+          },
+          {
+            measurement: 'froniusbattery',
+            fields: {
+              batteryactualcontrolmode: Influx.FieldType.STRING,
+              actualbatterystateofcharge: Influx.FieldType.INTEGER,
+              batteryactualdcpower: Influx.FieldType.FLOAT,
+              batterynominalcapacity: Influx.FieldType.INTEGER,
+            },
+            tags: [
+              'id', 'name'
+            ]
+          }
         ]
     });
 }
@@ -64,7 +70,9 @@ module.exports.initialize = async function(){
         // Check db is ready
         let dbs = await influxOP.getDatabaseNames();
         await _checkDb(dbs);
+
         // Subscribe to events
+        await agent.unsubscribeEvents();
         await agent.subscribeEvents();
         
         logger.info("InfluxDB initialized and waiting for events", "INFLUX");
@@ -73,99 +81,49 @@ module.exports.initialize = async function(){
       logger.error(err, "INFLUX")
       return Promise.reject(false);
     }
+  }
 
 
+  // Handling events
 
+    // froniusBattery
+      eventHandler.on("froniusbattery", function(data) {
+        influxOP.writePoints([
+          {
+          measurement: 'froniusbattery',
+          tags: { id: data.oid, name: data.name },
+          fields: { 
+            batteryactualcontrolmode: data.BattMode,
+            actualbatterystateofcharge: parseInt(data.SOC) || 0,
+            batteryactualdcpower: parseFloat(data.P_Akku) || 0,
+            batterynominalcapacity: parseInt(data.Capacity) || 0
+          },
+        }
+      ]).catch(err => {
+        logger.error(`Error saving data to InfluxDB! ${err.stack}`)
+      })
+    });
 
-    // .then(function(response){
-    //     // UKMQTT
-    //     eventHandler.on("ukmqtt", function(data) {
-    //       influxOP.writePoints([
-    //           {
-    //           measurement: 'ukmqtt',
-    //           tags: { id: data.id },
-    //           fields: { 
-    //               temperature: parseFloat(data.temperature),
-    //               humidity: parseFloat(data.humidity),
-    //               batterylevel: parseFloat(data.batterylevel),
-    //               batteryvoltage: parseFloat(data.batteryvoltage) 
-    //               },
-    //           }
-    //       ]).catch(err => {
-    //         logger.error(`Error saving data to InfluxDB! ${err.stack}`)
-    //       })
-    //     });
-    //     // eosinverter
-    //     eventHandler.on("eosinverter", function(data) {
-    //         influxOP.writePoints([
-    //           {
-    //           measurement: 'eosinverter',
-    //           tags: { id: data.oid, type: data.type, name: data.name },
-    //           fields: { 
-    //             pvinstalledcapacity: parseInt(data.pvinstalledcapacity) || 0,
-    //             pvactualdcvoltage: parseFloat(data.pvactualdcvoltage) || 0,
-    //             invertertotaldcpower: parseFloat(data.invertertotaldcpower) || 0,
-    //             inverteraccumulatedactiveenergyproduction: parseInt(data.inverteraccumulatedactiveenergyproduction) || 0,
-    //             // pvconnectionstatus: data.pvconnectionstatus,
-    //             inverteractualfrequency: parseFloat(data.inverteractualfrequency) || 0,
-    //             pvactualdccurrent: parseFloat(data.pvactualdccurrent) || 0,
-    //             inverteractualreactivepower: parseFloat(data.inverteractualreactivepower) || 0,
-    //             inverteractualactivepower: parseInt(data.inverteractualactivepower) || 0,
-    //             // inverterstatus: data.inverterstatus,
-    //             pvactualdcpower: parseFloat(data.pvactualdcpower) || 0,
-    //             // pvoperationstatus: data.pvoperationstatus
-    //               },
-    //           }
-    //       ]).catch(err => {
-    //         logger.error(`Error saving data to InfluxDB! ${err.stack}`)
-    //       })
-    //     });
-    //             // eosbattery
-    //             eventHandler.on("eosbattery", function(data) {
-    //               influxOP.writePoints([
-    //                 {
-    //                 measurement: 'eosbattery',
-    //                 tags: { id: data.oid, type: data.type, name: data.name },
-    //                 fields: { 
-    //                   // batterychargestatus: data.batterychargestatus,
-    //                   batteryactualdcpower: parseFloat(data.batteryactualdcpower) || 0,
-    //                   // batteryoperationalstatus: data.batteryoperationalstatus,
-    //                   batterynominalpower: parseInt(data.batterynominalpower) || 0,
-    //                   // batteryactualcontrolmode: data.batteryactualcontrolmode,
-    //                   batterynominalcapacity: parseInt(data.batterynominalcapacity) || 0,
-    //                   // batteryconnectionstatus: data.batteryconnectionstatus,
-    //                   batteryactualdcvoltage: parseFloat(data.batteryactualdcvoltage) || 0,
-    //                   actualbatterystateofcharge: parseInt(data.actualbatterystateofcharge) || 0
-    //                     },
-    //                 }
-    //             ]).catch(err => {
-    //               logger.error(`Error saving data to InfluxDB! ${err.stack}`)
-    //             })
-    //           });
-    //     // froniusinverter
-    //     eventHandler.on("froniusinverter", function(data) {
-    //       influxOP.writePoints([
-    //         {
-    //         measurement: 'froniusinverter',
-    //         tags: { id: data.oid, type: data.type, name: data.name },
-    //         fields: { 
-    //             InverterPVActualActivePower: parseFloat(data.InverterPVActualActivePower) || 0,
-    //             InverterAccumulatedActiveEnergyProduction: parseFloat(data.InverterAccumulatedActiveEnergyProduction) || 0,
-    //             InverterPVActualReactivePower: parseFloat(data.InverterPVActualReactivePower) || 0,
-    //             InverterGridActivePowerLoad: parseFloat(data.InverterGridActivePowerLoad) || 0, 
-    //             PvInstalledCapacity: parseFloat(data.PvInstalledCapacity) || 0,
-    //             InverterConsumerActivePowerLoad: parseFloat(data.InverterConsumerActivePowerLoad) || 0  
-    //             },
-    //         }
-    //     ]).catch(err => {
-    //       logger.error(`Error saving data to InfluxDB! ${err.stack}`)
-    //     })
-    //   });
-    // })
-    // .catch(function(err){
-    //     logger.error(err, "INFLUXDB");
-    // });
-}
+    // froniusInverter
+    eventHandler.on("froniusinverter", function(data) {
+      influxOP.writePoints([
+        {
+        measurement: 'froniusinverter',
+        tags: { id: data.oid, name: data.name },
+        fields: { 
+            devicestatus: data.IsOnline,
+            pvinstalledcapacity: parseInt(data.PeakPower) || 0,
+            accumulatedenergyproduced: parseInt(data.EnergyTotal) || 0,
+            invertergridactivepowerload: parseFloat(data.P_Grid) || 0,
+            inverterconsumeractivepowerload: parseFloat(data.P_Load) || 0,
+            inverteractualactivepower: parseFloat(data.P_PV) || 0
+          },
+        }
+      ]).catch(err => {
+        logger.error(`Error saving data to InfluxDB! ${err.stack}`)
+      })
+    });
+
 
 // Private functions
 

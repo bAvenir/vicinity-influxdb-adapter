@@ -39,6 +39,9 @@ router
   .get('/export/actions', controller.exportFile)
   .get('/export/events', controller.exportFile)
   // HEALTHCHECK endpoints
-  .get('/healthcheck', controller.healthcheck);
+  .get('/healthcheck', controller.healthcheck)
+  // INFLUX endpoints
+  .get('/influx/events/subscribe', controller.influxSubscribe)
+  .get('/influx/events/unsubscribe', controller.influxUnsubscribe);
 
   module.exports = router;
