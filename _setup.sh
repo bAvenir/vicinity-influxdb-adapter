@@ -38,9 +38,9 @@ mkdir -p ${MY_PATH}/log
 chmod 777 -R ${MY_PATH}/gateway
 
 # Kill and remove old proxy containers
-docker kill proxy bavenir-adapter gateway cache-db
-docker rm proxy bavenir-adapter gateway cache-db
-docker rmi bavenir-adapter_bavenir-adapter
+docker kill proxy bavenir-adapter-influx_bavenir-adapter gateway cache-db
+docker rm proxy bavenir-adapter-influx_bavenir-adapter gateway cache-db
+docker rmi bavenir-adapter-influx_bavenir-adapter
 docker rm $(docker ps -a -q) # Remove zombi containers
 
 # Start proxy container
