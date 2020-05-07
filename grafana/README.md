@@ -28,6 +28,13 @@
     -e "GF_SMTP_PASSWORD=mysecret"
     ```
 
+    * Install plugins
+
+    Add the environment variable below. Find more plugins in Grafana website. To remove them you need to rebuild the docker image or to remove the plugins from the plugin folder that you can find inside grafana/data.
+
+    ```
+    -e "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource,digiapulssi-organisations-panel,agenty-flowcharting-panel,vonage-status-panel,grafana-piechart-panel,snuids-radar-panel,natel-plotly-panel" \
+    ```
 
 * Useful links
     * https://grafana.com/docs/grafana/latest/installation/docker/
