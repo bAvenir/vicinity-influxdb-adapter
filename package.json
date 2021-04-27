@@ -23,7 +23,7 @@
     "influx": "^5.5.1",
     "morgan": "^1.9.1",
     "path": "^0.12.7",
-    "redis": "^3.0.2",
+    "redis": "^3.1.1",
     "stoppable": "^1.1.0",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.4.2"
